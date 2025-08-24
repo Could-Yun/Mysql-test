@@ -4,6 +4,7 @@
   新特性开发的 回归测试（如事务、复制功能）；
   补丁 / 版本升级的 兼容性验证；
   社区贡献代码的 准入测试。
+  
 二、架构设计：目录与代码模块
   MySQL-Test 以 目录分层 + 脚本驱动 为核心架构，关键组成如下：
   2.1 核心目录结构
@@ -25,6 +26,7 @@
    3. 结果对比层：diff 命令 + 自定义逻辑
     对比 out/*.out 与 r/*.result，输出差异（如行内容不一致、顺序错误）；
     标记测试结果（pass/fail），汇总到最终报告。
+    
 三、运行机制：从代码到执行的全流程
   以 mysql-test-run.pl select 执行单条用例为例，拆解核心流程：
   3.1 步骤 1：参数解析与环境初始化
@@ -53,6 +55,7 @@
   差异对比：调用系统 diff 命令，对比 out/select.out 与 r/select.result：
   若完全一致，标记 select.test 为 pass；
   若存在差异（如 SQL 输出多一行），输出差异详情（如 Line 2: Expected '1', Got '2'），标记为 fail。
+  
   环境清理：关闭测试实例，删除临时数据目录。
 四、测试用例开发：从编写到验证
   4.1 用例分类与场景
@@ -86,6 +89,7 @@
     --echo "Message"	打印调试信息（如 --echo "Start testing transaction"）
     --error 1062	预期 SQL 执行报错（如唯一键冲突，错误码 1062）
     --replace_result	替换输出中的动态值（如时间戳 → [TIMESTAMP]，避免结果波动）
+    
 五、框架扩展：定制化与集成
   5.1 代码级扩展：修改 mysql-test-run.pl
     场景：添加自定义参数 --custom-tag 标记测试用例。
@@ -125,5 +129,5 @@
     --source lib/custom-lib.pl
     --perl use custom-lib; clean_up($dbh);  # 调用 Perl 函数
 
-七、总结
+六、总结
   MySQL-Test 以 “用例定义 → 执行引擎 → 结果对比” 为核心流程，通过灵活的控制指令和可扩展的 Perl 脚本，支撑 MySQL 从功能到性能的全链路测试。掌握其 代码级原理（如 mysql-test-run.pl 的调度逻辑、mysqltest 的指令解析），结合 场景化用例开发 与 CI/CD 集成，可高效保障数据库质量。
